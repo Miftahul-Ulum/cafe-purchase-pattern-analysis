@@ -494,64 +494,7 @@ foreach ($support as $s) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Analisis Story Cafe - Apriori</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; margin: 0; padding: 0; color: #1f2937; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; }
-        header { background: linear-gradient(135deg, #0d6efd, #6f42c1); color: #fff; padding: 28px 0 22px; margin-bottom: 24px; }
-        header .inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-        header h1 { margin: 0; font-size: 24px; }
-        header p { margin: 4px 0 0; opacity: .85; font-size: 13px; }
-        .print-btn { background: #fff; color: #0d6efd; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        nav { background: #fff; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; }
-        nav .inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: flex; gap: 6px; overflow-x: auto; }
-        nav a { padding: 12px 14px; color: #4b5563; text-decoration: none; font-size: 13px; white-space: nowrap; border-bottom: 3px solid transparent; }
-        nav a:hover { color: #0d6efd; border-bottom-color: #0d6efd; }
-        .box { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
-        h2 { color: #111827; font-size: 18px; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid #0d6efd; }
-        h3 { font-size: 15px; margin: 0 0 8px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th, td { border: 1px solid #dbe2ea; padding: 7px 8px; text-align: center; }
-        th { background: #0d6efd; color: #fff; }
-        tr:nth-child(even) { background: #f7fafc; }
-        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; font-weight: bold; font-size: 14px; }
-        .alert.ok { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
-        .alert.err { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
-        .hint { font-size: 12px; color: #6b7280; margin-top: 10px; line-height: 1.6; }
-        .hint code, code { background: #eef2f7; padding: 1px 5px; border-radius: 3px; }
-        button, .btn { background: #0d6efd; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        button:hover, .btn:hover { background: #0b5ed7; }
-        .btn-danger { background: #dc3545; }
-        .btn-danger:hover { background: #bb2d3b; }
-        .btn-light { background: #eef2f7; color: #374151; }
-        .btn-light:hover { background: #dde5ee; }
-        input[type=file], input[type=date], input[type=number] { padding: 7px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
-        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
-        .kpi { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.07); border-left: 4px solid #0d6efd; }
-        .kpi .label { font-size: 12px; color: #6b7280; margin-bottom: 6px; }
-        .kpi .value { font-size: 20px; font-weight: bold; color: #111827; }
-        .kpi .sub { font-size: 11px; color: #9ca3af; margin-top: 4px; }
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
-        .badge.mkn { background: #cfe2ff; color: #084298; }
-        .badge.mnm { background: #d1e7dd; color: #0f5132; }
-        .badge.a { background: #198754; color: #fff; }
-        .badge.b { background: #ffc107; color: #111; }
-        .badge.c { background: #dc3545; color: #fff; }
-        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .chart-grid .full { grid-column: 1 / -1; }
-        .chart-box { background: #fafcff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; }
-        .chart-box h3 { text-align: center; font-size: 13px; color: #374151; }
-        .chart-box canvas { max-height: 260px; }
-        .rek-card { display: flex; gap: 12px; padding: 14px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #0d6efd; background: #f8faff; }
-        .rek-card .icon { font-size: 22px; flex-shrink: 0; }
-        .rek-card .isi { font-size: 13px; line-height: 1.55; color: #374151; flex: 1; }
-        .rek-card .aksi { margin-top: 8px; font-size: 12px; background: #e7f0ff; border-left: 3px solid #0d6efd; padding: 8px 10px; border-radius: 4px; color: #084298; }
-        .filter-bar { background: #eef2f7; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
-        .filter-bar label { font-size: 11px; color: #6b7280; display: block; margin-bottom: 3px; }
-        @media (max-width: 760px) { .chart-grid { grid-template-columns: 1fr; } }
-        @media print { nav, .print-btn, .upload-box, .filter-bar { display: none !important; } body { background: #fff; } }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
@@ -569,7 +512,7 @@ foreach ($support as $s) {
 </nav>
 
 <div class="container">
-    <header style="border-radius:0 0 0 0;">
+    <header>
         <div class="inner">
             <div>
                 <h1>☕ Dashboard Analisis Story Cafe</h1>
@@ -588,7 +531,7 @@ foreach ($support as $s) {
         <div class="kpi"><div class="label">Total Pendapatan</div><div class="value">Rp <?= number_format($kpiRev, 0, ',', '.') ?></div><div class="sub">dari seluruh menu</div></div>
         <div class="kpi"><div class="label">Rata-rata Item / Transaksi</div><div class="value"><?= $kpiAvgItems ?></div><div class="sub">keranjang belanja</div></div>
         <div class="kpi"><div class="label">Rata-rata Transaksi / Hari</div><div class="value"><?= $kpiPerDay ?></div><div class="sub"><?= $distinctDays ?> hari data</div></div>
-        <div class="kpi" style="border-left-color:#198754"><div class="label">Menu Terlaris</div><div class="value" style="font-size:15px"><?= htmlspecialchars($kpiTopMenu) ?></div><div class="sub">berdasarkan pendapatan</div></div>
+        <div class="kpi kpi-green"><div class="label">Menu Terlaris</div><div class="value value-sm"><?= htmlspecialchars($kpiTopMenu) ?></div><div class="sub">berdasarkan pendapatan</div></div>
     </div>
 
     <!-- ============ UPLOAD ============ -->
@@ -600,7 +543,7 @@ foreach ($support as $s) {
             <input type="hidden" name="dari_h" value="<?= htmlspecialchars($dari) ?>">
             <input type="hidden" name="sampai_h" value="<?= htmlspecialchars($sampai) ?>">
         </form>
-        <form method="post" class="row" style="margin-top:10px">
+        <form method="post" class="row mt-10">
             <button class="btn-danger" name="reset_data" onclick="return confirm('Hapus semua data transaksi? Menu tetap tersimpan.')">🗑️ Hapus Data Transaksi</button>
         </form>
         <p class="hint">
@@ -639,7 +582,7 @@ foreach ($support as $s) {
                     <div class="icon"><?= $r['icon'] ?></div>
                     <div class="isi">
                         <h3><?= $r['judul'] ?></h3>
-                        <p style="margin:0"><?= $r['isi'] ?></p>
+                        <p class="no-margin"><?= $r['isi'] ?></p>
                         <div class="aksi">⚙️ Tindakan: <?= $r['aksi'] ?></div>
                     </div>
                 </div>
@@ -668,7 +611,7 @@ foreach ($support as $s) {
             <?php $no = 1; foreach ($revList as $it): ?>
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td style="text-align:left"><?= htmlspecialchars($it['nama_menu']) ?></td>
+                    <td class="text-left"><?= htmlspecialchars($it['nama_menu']) ?></td>
                     <td><span class="badge <?= $it['kategori'] === 'minuman' ? 'mnm' : 'mkn' ?>"><?= $it['kategori'] === 'minuman' ? 'minuman' : 'makanan' ?></span></td>
                     <td>Rp <?= number_format($it['harga'], 0, ',', '.') ?></td>
                     <td><?= $it['qty'] ?></td>
@@ -688,7 +631,7 @@ foreach ($support as $s) {
             <?php $no = 1; foreach ($support as $s): $kat = $kategoriMenu[$s['menu']] ?? ''; ?>
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td style="text-align:left"><?= htmlspecialchars($s['menu']) ?></td>
+                    <td class="text-left"><?= htmlspecialchars($s['menu']) ?></td>
                     <td><span class="badge <?= $kat === 'minuman' ? 'mnm' : 'mkn' ?>"><?= $kat ? htmlspecialchars($kat) : 'makanan' ?></span></td>
                     <td><?= $s['jumlah'] ?></td>
                     <td><?= $s['support'] ?>%</td>
@@ -709,9 +652,9 @@ foreach ($support as $s) {
             <?php $no = 1; foreach ($rules as $c): ?>
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td style="text-align:left"><b><?= htmlspecialchars($c['A']) ?></b></td>
+                    <td class="text-left"><b><?= htmlspecialchars($c['A']) ?></b></td>
                     <td>→</td>
-                    <td style="text-align:left"><b><?= htmlspecialchars($c['B']) ?></b></td>
+                    <td class="text-left"><b><?= htmlspecialchars($c['B']) ?></b></td>
                     <td><?= $c['supp'] ?>%</td>
                     <td><?= $c['conf'] ?>%</td>
                     <td><?= $c['lift'] ?></td>
@@ -726,7 +669,7 @@ foreach ($support as $s) {
     <!-- ============ PENJELASAN ============ -->
     <div class="box" id="penjelasan">
         <h2>📝 Cara Membaca Analisis</h2>
-        <ul style="font-size:13px; line-height:1.8; color:#374151">
+        <ul class="explain">
             <li><b>Support</b> — frekuensi kemunculan sebuah menu (atau kombinasi) terhadap seluruh transaksi. Makin tinggi, makin populer.</li>
             <li><b>Confidence</b> — peluang pelanggan membeli B jika sudah membeli A. Dasar rekomendasi bundling.</li>
             <li><b>Lift</b> — rasio kekuatan asosiasi. Lift &gt; 1 = kombinasi nyata bukan kebetulan; lift = 1 = tidak ada keterkaitan.</li>
@@ -738,49 +681,22 @@ foreach ($support as $s) {
 </div>
 
 <script>
-<?php if ($total > 0): ?>
-const colors = ['#0d6efd','#6f42c1','#198754','#ffc107','#dc3545','#0dcaf0','#fd7e14','#20c997','#e83e8c','#6c757d'];
-Chart.defaults.font.family = 'Segoe UI, Arial, sans-serif';
-Chart.defaults.font.size = 11;
-
-new Chart(document.getElementById('chartTren'), {
-    type: 'bar',
-    data: {
-        labels: <?= json_encode($chDateLabels) ?>,
-        datasets: [
-            { label: 'Pendapatan (Rp)', data: <?= json_encode($chDateRev) ?>, backgroundColor: '#0d6efd', borderRadius: 3 },
-            { label: 'Transaksi', data: <?= json_encode($chDateN) ?>, type: 'line', borderColor: '#198754', backgroundColor: '#198754', yAxisID: 'y1', tension: .3 }
-        ]
-    },
-    options: { responsive: true, plugins: { legend: { position: 'top' } },
-        scales: { y: { beginAtZero: true }, y1: { beginAtZero: true, position: 'right', grid: { display: false } } } }
-});
-
-new Chart(document.getElementById('chartJam'), {
-    type: 'bar',
-    data: { labels: <?= json_encode($chJamLabels) ?>, datasets: [{ label: 'Transaksi', data: <?= json_encode($chJamVals) ?>, backgroundColor: '#6f42c1', borderRadius: 3 }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
-
-new Chart(document.getElementById('chartHari'), {
-    type: 'bar',
-    data: { labels: <?= json_encode($chHariLabels) ?>, datasets: [{ label: 'Transaksi', data: <?= json_encode($chHariVals) ?>, backgroundColor: '#20c997', borderRadius: 3 }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-});
-
-new Chart(document.getElementById('chartTopMenu'), {
-    type: 'bar',
-    data: { labels: <?= json_encode($chTopLabels) ?>, datasets: [{ label: 'Pendapatan (Rp)', data: <?= json_encode($chTopVals) ?>, backgroundColor: colors.slice(0, <?= count($chTopVals) ?>), borderRadius: 3 }] },
-    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
-});
-
-new Chart(document.getElementById('chartKategori'), {
-    type: 'doughnut',
-    data: { labels: <?= json_encode($chKatLabels) ?>, datasets: [{ data: <?= json_encode($chKatVals) ?>, backgroundColor: ['#ffc107', '#0d6efd'] }] },
-    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-});
-<?php endif ?>
+window.CHART_DATA = {
+    hasData: <?= $total > 0 ? 'true' : 'false' ?>,
+    dateLabels: <?= json_encode($chDateLabels) ?>,
+    dateRev: <?= json_encode($chDateRev) ?>,
+    dateN: <?= json_encode($chDateN) ?>,
+    jamLabels: <?= json_encode($chJamLabels) ?>,
+    jamVals: <?= json_encode($chJamVals) ?>,
+    hariLabels: <?= json_encode($chHariLabels) ?>,
+    hariVals: <?= json_encode($chHariVals) ?>,
+    topLabels: <?= json_encode($chTopLabels) ?>,
+    topVals: <?= json_encode($chTopVals) ?>,
+    katLabels: <?= json_encode($chKatLabels) ?>,
+    katVals: <?= json_encode($chKatVals) ?>
+};
 </script>
+<script src="assets/js/main.js"></script>
 
 </body>
 </html>

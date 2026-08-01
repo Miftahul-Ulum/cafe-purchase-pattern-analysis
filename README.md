@@ -58,10 +58,15 @@ Detail lengkap: [docs/format_data.md](docs/format_data.md)
 
 ```
 Analisis/
-├── analisis_full.php      # Aplikasi utama (satu file, langsung jalan)
+├── analisis_full.php      # Aplikasi utama (backend + markup)
 ├── contoh_data.csv        # Contoh data transaksi (14 hari)
 ├── README.md
 ├── .gitignore
+├── assets/
+│   ├── css/
+│   │   └── style.css      # Seluruh styling dashboard
+│   └── js/
+│       └── main.js        # Render grafik (Chart.js) dari window.CHART_DATA
 ├── docs/
 │   └── format_data.md     # Dokumentasi format data CSV/XLSX
 └── sql/
