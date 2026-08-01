@@ -1,0 +1,76 @@
+Tanggal,Menu,Harga,Jumlah,Gambar,Kategori
+2026-07-01 08:30,Cappuccino,25000,1,,minuman
+2026-07-01 08:30,Croissant,20000,1,,makanan
+2026-07-01 10:15,Americano,20000,1,,minuman
+2026-07-01 10:15,Toast,15000,1,,makanan
+2026-07-01 14:40,Caffe Latte,28000,1,,minuman
+2026-07-01 14:40,Cheese Cake,28000,1,,makanan
+2026-07-02 09:00,Espresso,18000,1,,minuman
+2026-07-02 09:00,Brownie,22000,1,,makanan
+2026-07-02 13:20,Thai Tea,22000,1,,minuman
+2026-07-02 13:20,Garlic Bread,20000,1,,makanan
+2026-07-02 19:45,Cappuccino,25000,1,,minuman
+2026-07-02 19:45,Croissant,20000,1,,makanan
+2026-07-02 19:45,French Fries,18000,1,,makanan
+2026-07-03 10:00,Matcha Latte,30000,1,,minuman
+2026-07-03 10:00,Banana Pancake,25000,1,,makanan
+2026-07-03 16:30,Americano,20000,1,,minuman
+2026-07-03 16:30,Cheese Cake,28000,1,,makanan
+2026-07-03 20:15,Hot Chocolate,25000,1,,minuman
+2026-07-03 20:15,Brownie,22000,1,,makanan
+2026-07-04 11:00,Caffe Latte,28000,1,,minuman
+2026-07-04 11:00,Croissant,20000,1,,makanan
+2026-07-04 15:20,Espresso,18000,1,,minuman
+2026-07-04 18:00,Cappuccino,25000,1,,minuman
+2026-07-04 18:00,Cheese Cake,28000,1,,makanan
+2026-07-04 18:00,Salad,25000,1,,makanan
+2026-07-05 09:30,Matcha Latte,30000,1,,minuman
+2026-07-05 09:30,Croissant,20000,1,,makanan
+2026-07-05 12:45,Thai Tea,22000,1,,minuman
+2026-07-05 12:45,Chicken Sandwich,30000,1,,makanan
+2026-07-05 12:45,French Fries,18000,1,,makanan
+2026-07-05 19:00,Caffe Latte,28000,1,,minuman
+2026-07-05 19:00,Brownie,22000,1,,makanan
+2026-07-06 08:00,Espresso,18000,1,,minuman
+2026-07-06 08:00,Toast,15000,1,,makanan
+2026-07-06 14:10,Cappuccino,25000,1,,minuman
+2026-07-06 14:10,Banana Pancake,25000,1,,makanan
+2026-07-06 20:30,Hot Chocolate,25000,1,,minuman
+2026-07-06 20:30,Garlic Bread,20000,1,,makanan
+2026-07-07 10:30,Americano,20000,1,,minuman
+2026-07-07 10:30,Brownie,22000,1,,makanan
+2026-07-07 17:00,Matcha Latte,30000,1,,minuman
+2026-07-07 17:00,Cheese Cake,28000,1,,makanan
+2026-07-08 09:15,Caffe Latte,28000,1,,minuman
+2026-07-08 09:15,Croissant,20000,1,,makanan
+2026-07-08 09:15,Toast,15000,1,,makanan
+2026-07-08 19:30,Cappuccino,25000,1,,minuman
+2026-07-08 19:30,Cheese Cake,28000,1,,makanan
+2026-07-08 19:30,Salad,25000,1,,makanan
+2026-07-09 12:00,Thai Tea,22000,1,,minuman
+2026-07-09 12:00,Chicken Sandwich,30000,1,,makanan
+2026-07-09 16:45,Espresso,18000,1,,minuman
+2026-07-09 16:45,Croissant,20000,1,,makanan
+2026-07-10 08:45,Americano,20000,1,,minuman
+2026-07-10 08:45,Toast,15000,1,,makanan
+2026-07-10 08:45,Banana Pancake,25000,1,,makanan
+2026-07-10 13:30,Caffe Latte,28000,1,,minuman
+2026-07-10 13:30,Garlic Bread,20000,1,,makanan
+2026-07-11 10:10,Matcha Latte,30000,1,,minuman
+2026-07-11 10:10,Croissant,20000,1,,makanan
+2026-07-11 19:15,Cappuccino,25000,1,,minuman
+2026-07-11 19:15,Brownie,22000,1,,makanan
+2026-07-11 19:15,French Fries,18000,1,,makanan
+2026-07-12 11:30,Hot Chocolate,25000,1,,minuman
+2026-07-12 11:30,Brownie,22000,1,,makanan
+2026-07-12 15:40,Thai Tea,22000,1,,minuman
+2026-07-12 15:40,Cheese Cake,28000,1,,makanan
+2026-07-13 09:50,Espresso,18000,1,,minuman
+2026-07-13 09:50,Banana Pancake,25000,1,,makanan
+2026-07-13 18:20,Caffe Latte,28000,1,,minuman
+2026-07-13 18:20,Chicken Sandwich,30000,1,,makanan
+2026-07-14 10:00,Americano,20000,1,,minuman
+2026-07-14 10:00,Croissant,20000,1,,makanan
+2026-07-14 16:10,Matcha Latte,30000,1,,minuman
+2026-07-14 16:10,Cheese Cake,28000,1,,makanan
+2026-07-14 16:10,Salad,25000,1,,makanan
