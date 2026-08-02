@@ -217,6 +217,57 @@ if (isset($_POST['reset_data'])) {
     $pesan = "Semua data transaksi telah dihapus. Silakan upload ulang.";
 }
 
+/* ================= UPLOAD / HAPUS FOTO MENU ================= */
+$dirFoto = __DIR__ . '/../assets/img/menu';
+
+if (isset($_POST['upload_foto']) && isset($_FILES['foto_menu'])) {
+    $id_menu = (int)($_POST['id_menu'] ?? 0);
+    $f = $_FILES['foto_menu'];
+    if ($id_menu <= 0) {
+        $error = "Menu tidak valid.";
+    } elseif ($f['error'] !== UPLOAD_ERR_OK || !$f['tmp_name']) {
+        $error = "Pilih file foto terlebih dahulu.";
+    } else {
+        $ext = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        if (!in_array($ext, $allowed)) {
+            $error = "Format foto harus JPG, PNG, WEBP, atau GIF.";
+        } else {
+            if (!is_dir($dirFoto)) mkdir($dirFoto, 0777, true);
+            $namaFile = 'menu_' . $id_menu . '.' . $ext;
+            $pathBaru = 'assets/img/menu/' . $namaFile;
+            $q = $conn->query("SELECT gambar FROM menu WHERE id_menu=$id_menu");
+            if ($q && ($r = $q->fetch_assoc())) {
+                $gambarLama = $r['gambar'];
+                if (move_uploaded_file($f['tmp_name'], $dirFoto . '/' . $namaFile)) {
+                    if ($gambarLama && $gambarLama !== $pathBaru && strpos($gambarLama, 'assets/img/menu/') === 0) {
+                        @unlink(__DIR__ . '/../' . $gambarLama);
+                    }
+                    $conn->query("UPDATE menu SET gambar='$pathBaru' WHERE id_menu=$id_menu");
+                    $pesan = "Foto menu berhasil disimpan.";
+                } else {
+                    $error = "Gagal menyimpan file foto.";
+                }
+            } else {
+                $error = "Menu tidak ditemukan.";
+            }
+        }
+    }
+}
+
+if (isset($_POST['hapus_foto']) && isset($_POST['id_menu'])) {
+    $id_menu = (int)$_POST['id_menu'];
+    $q = $conn->query("SELECT gambar FROM menu WHERE id_menu=$id_menu");
+    if ($q && ($r = $q->fetch_assoc())) {
+        $gambarLama = $r['gambar'];
+        if ($gambarLama && strpos($gambarLama, 'assets/img/menu/') === 0) {
+            @unlink(__DIR__ . '/../' . $gambarLama);
+        }
+        $conn->query("UPDATE menu SET gambar='' WHERE id_menu=$id_menu");
+        $pesan = "Foto menu dihapus.";
+    }
+}
+
 /* ================= FILTER ANALISIS ================= */
 $dari  = isset($_GET['dari']) && $_GET['dari'] !== ''  ? $conn->real_escape_string($_GET['dari'])  : '';
 $sampai = isset($_GET['sampai']) && $_GET['sampai'] !== '' ? $conn->real_escape_string($_GET['sampai']) : '';
@@ -475,6 +526,17 @@ if ($total > 0) {
 $kategoriMenu = [];
 $q = $conn->query("SELECT nama_menu, kategori FROM menu");
 if ($q) while ($r = $q->fetch_assoc()) $kategoriMenu[$r['nama_menu']] = $r['kategori'];
+
+/* ================= DAFTAR MENU + GAMBAR ================= */
+$menuFotoList = [];
+$gambarMap = [];
+$q = $conn->query("SELECT id_menu, nama_menu, harga, kategori, gambar FROM menu ORDER BY id_menu");
+if ($q) {
+    while ($r = $q->fetch_assoc()) {
+        $menuFotoList[] = $r;
+        $gambarMap[$r['nama_menu']] = $r['gambar'];
+    }
+}
 
 $makanan = [];
 $minuman = [];

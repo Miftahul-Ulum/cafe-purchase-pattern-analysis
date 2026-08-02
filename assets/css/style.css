@@ -139,6 +139,42 @@ input[type=file], input[type=date], input[type=number] {
 .mt-10 { margin-top: 10px; }
 .no-margin { margin: 0; }
 
+/* foto menu */
+.foto-thumb {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+}
+.foto-form {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+.foto-form input[type=file] { font-size: 11px; max-width: 160px; padding: 5px; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* bar upload foto tunggal */
+.upload-foto-bar {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+.upload-foto-bar label { font-size: 11px; color: #6b7280; display: block; margin-bottom: 4px; }
+.upload-foto-bar select,
+.upload-foto-bar input[type=file] {
+    padding: 7px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fff;
+}
+.upload-foto-bar select { min-width: 200px; }
+
 .kpis {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -282,4 +318,8 @@ input[type=file], input[type=date], input[type=number] {
 @media print {
     nav, .print-btn, .upload-box, .filter-bar { display: none !important; }
     body { background: #fff; }
+    .rek-slide { display: block !important; animation: none !important; margin-bottom: 10px; }
+    .rek-track { min-height: 0 !important; }
+    .rek-controls { display: none !important; }
+    .rek-slide .rek-card { margin-bottom: 10px; }
 }

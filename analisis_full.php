@@ -22,6 +22,7 @@ require __DIR__ . '/includes/analisis.php';
     <div class="inner">
         <a href="#kpi">Ringkasan</a>
         <a href="#upload">Upload Data</a>
+        <a href="#foto">Foto Menu</a>
         <a href="#rekomendasi">Rekomendasi</a>
         <a href="#tren">Tren Waktu</a>
         <a href="#abc">Pendapatan (ABC)</a>
@@ -73,6 +74,61 @@ require __DIR__ . '/includes/analisis.php';
             Kolom Tanggal boleh berisi <b>jam</b> (mis. <code>2024-01-15 14:30</code>) untuk analisis jam ramai/sepi.
             Kategori boleh diisi <b>makanan/minuman</b>; jika kosong dideteksi otomatis. Simpan sebagai <b>.csv</b> agar langsung jalan.
         </p>
+    </div>
+
+    <!-- ============ FOTO MENU ============ -->
+    <div class="box" id="foto">
+        <h2>📷 Foto Menu</h2>
+        <p class="hint">Pilih menu pada daftar, lalu upload fotonya (JPG/PNG/WEBP/GIF, maks ±2MB). Foto disimpan lokal di <code>assets/img/menu/</code> dan tampil di <b>Layar Cafe</b>.</p>
+        <form method="post" enctype="multipart/form-data" class="row upload-foto-bar">
+            <div>
+                <label>Menu</label>
+                <select name="id_menu" required>
+                    <option value="">— Pilih Menu —</option>
+                    <optgroup label="Makanan">
+                        <?php foreach ($menuFotoList as $m): if ($m['kategori'] === 'minuman') continue; ?>
+                            <option value="<?= (int)$m['id_menu'] ?>"><?= htmlspecialchars($m['nama_menu']) ?></option>
+                        <?php endforeach ?>
+                    </optgroup>
+                    <optgroup label="Minuman">
+                        <?php foreach ($menuFotoList as $m): if ($m['kategori'] !== 'minuman') continue; ?>
+                            <option value="<?= (int)$m['id_menu'] ?>"><?= htmlspecialchars($m['nama_menu']) ?></option>
+                        <?php endforeach ?>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <label>File Foto</label>
+                <input type="file" name="foto_menu" accept="image/jpeg,image/png,image/webp,image/gif" required>
+            </div>
+            <button name="upload_foto">⬆️ Upload Foto</button>
+        </form>
+        <table>
+            <tr><th>Menu</th><th>Kategori</th><th>Foto Saat Ini</th><th>Aksi</th></tr>
+            <?php foreach ($menuFotoList as $m): ?>
+                <tr>
+                    <td class="text-left"><b><?= htmlspecialchars($m['nama_menu']) ?></b><br><span class="hint">Rp <?= number_format((int)$m['harga'], 0, ',', '.') ?></span></td>
+                    <td><span class="badge <?= $m['kategori'] === 'minuman' ? 'mnm' : 'mkn' ?>"><?= $m['kategori'] === 'minuman' ? 'minuman' : 'makanan' ?></span></td>
+                    <td>
+                        <?php if ($m['gambar']): ?>
+                            <img src="<?= htmlspecialchars($m['gambar']) ?>" alt="<?= htmlspecialchars($m['nama_menu']) ?>" class="foto-thumb">
+                        <?php else: ?>
+                            <span class="hint">belum ada</span>
+                        <?php endif ?>
+                    </td>
+                    <td>
+                        <?php if ($m['gambar']): ?>
+                            <form method="post" class="foto-form">
+                                <input type="hidden" name="id_menu" value="<?= (int)$m['id_menu'] ?>">
+                                <button name="hapus_foto" class="btn-sm btn-danger" onclick="return confirm('Hapus foto ini?')">🗑️ Hapus</button>
+                            </form>
+                        <?php else: ?>
+                            <span class="hint">—</span>
+                        <?php endif ?>
+                    </td>
+                </tr>
+            <?php endforeach ?>
+        </table>
     </div>
 
     <!-- ============ FILTER ============ -->

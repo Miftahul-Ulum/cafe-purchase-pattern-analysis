@@ -1,19 +1,23 @@
 <?php
 /* ============================================================
-   LAYAR MONITOR CAFE - STORY CAFE  (gaya menu board)
-   Tampilan TV/monitor untuk pelanggan: 4 slide berotasi
-   (Hero Promo, Menu Makanan, Menu Minuman, Podium Terlaris)
-   + ticker berjalan. Hanya menampilkan data publik (menu &
-   harga); TIDAK menampilkan pendapatan/transaksi internal.
-   Parameter:
-     ?detik=60   interval refresh halaman (10-3600)
-     ?rotasi=8   interval rotasi slide (2-60 detik)
+   LAYAR MONITOR CAFE - STORY CAFE  (satu layar, dibagi panel)
+   Satu tampilan statis berisi beberapa panel: Menu Terlaris,
+   Promo Bundling & Rekomendasi. Simpel, terang, tidak ramai.
+   Foto menu ditampilkan bila sudah diupload di dashboard admin.
+   Parameter: ?detik=60  interval auto-refresh (10-3600).
    ============================================================ */
 require __DIR__ . '/includes/analisis.php';
 
-$autoDetik   = isset($_GET['detik'])  ? max(10, min(3600, (int)$_GET['detik'])) : 60;
-$rotasiDetik = isset($_GET['rotasi']) ? max(2,  min(60,   (int)$_GET['rotasi'])) : 8;
+$autoDetik = isset($_GET['detik']) ? max(10, min(3600, (int)$_GET['detik'])) : 60;
 $hariIni = date('Y-m-d');
+
+/* ================= INFO KAFE (boleh diubah) ================= */
+$infoBuka     = 'Setiap Hari';
+$infoJamMulai = '08.00';
+$infoJamTutup = '22.00';
+$infoLokasi   = 'Jl. Raya Contoh No. 12';
+$infoWa       = '0812-3456-7890';
+$infoIg       = '@storycafe.id';
 
 /* menu paling laris hari ini (nama saja) */
 $todayTopName = '';
@@ -30,8 +34,14 @@ $q = $conn->query("
 if ($q && ($r = $q->fetch_assoc())) $todayTopName = $r['nama_menu'];
 
 /* ================= DATA TAMPILAN ================= */
-$makananItems = array_values(array_filter($revList, fn($m) => ($m['kategori'] ?? '') !== 'minuman'));
-$minumanItems = array_values(array_filter($revList, fn($m) => ($m['kategori'] ?? '') === 'minuman'));
+$topItems = array_slice($revList, 0, 6);
+
+$maxQty = 1;
+foreach ($revList as $m) $maxQty = max($maxQty, (int)$m['qty']);
+
+$gambarMap = [];
+$q = $conn->query("SELECT nama_menu, gambar FROM menu");
+if ($q) while ($r = $q->fetch_assoc()) $gambarMap[$r['nama_menu']] = $r['gambar'];
 
 $heroCombo = $rules[0] ?? null;
 if ($heroCombo) {
@@ -44,12 +54,8 @@ if ($heroCombo) {
     $heroHarga = ($a['harga'] ?? 0) + ($b['harga'] ?? 0);
 }
 
-$maxQty = 1;
-foreach ($revList as $m) $maxQty = max($maxQty, (int)$m['qty']);
-$podiumTop = array_slice($revList, 0, 3);
-$podiumRest = array_slice($revList, 3, 6);
-$populerSet = [];
-foreach (array_slice($revList, 0, 3) as $p) $populerSet[$p['nama_menu']] = true;
+$andalan = $revList[0] ?? null;
+$komboRek = $rules[0] ?? null;
 
 function emoji_menu($nama) {
     $n = strtolower($nama);
@@ -74,19 +80,20 @@ function emoji_menu($nama) {
 
 function rupiah($n) { return 'Rp ' . number_format((int)$n, 0, ',', '.'); }
 
-/* ticker berjalan */
-$ticker = [];
-if ($todayTopName !== '') $ticker[] = "🔥 PALING LARIS HARI INI: $todayTopName";
-foreach (array_slice($rules, 0, 4) as $r) $ticker[] = "🎁 {$r['A']} + {$r['B']}";
-if (isset($katLeadNama)) $ticker[] = "📌 Kategori Terpopuler: $katLeadNama";
-if (!$ticker) $ticker[] = '☕ Story Cafe — Menu Favorit & Rekomendasi';
+function menu_visual($nama, $gambarMap, $class) {
+    $g = $gambarMap[$nama] ?? '';
+    if ($g !== '') {
+        return '<img class="' . $class . '" src="' . htmlspecialchars($g) . '" alt="' . htmlspecialchars($nama) . '">';
+    }
+    return '<span class="' . $class . '-emoji">' . emoji_menu($nama) . '</span>';
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Story Cafe - Digital Menu Board</title>
+    <title>Layar Cafe - Story Cafe</title>
     <link rel="stylesheet" href="assets/css/display.css">
 </head>
 <body>
@@ -94,7 +101,7 @@ if (!$ticker) $ticker[] = '☕ Story Cafe — Menu Favorit & Rekomendasi';
 
     <header class="topbar">
         <div class="brand">
-            <div class="logo-mark">☕</div>
+            <span class="logo-mark">☕</span>
             <div>
                 <h1>STORY <span>CAFE</span></h1>
                 <p>MENU FAVORIT &amp; REKOMENDASI</p>
@@ -115,123 +122,95 @@ if (!$ticker) $ticker[] = '☕ Story Cafe — Menu Favorit & Rekomendasi';
         </div>
     <?php else: ?>
 
-    <div class="stage" id="carousel">
+    <?php if ($todayTopName): ?>
+        <div class="banner">🔥 <b>Paling Laris Hari Ini:</b> <?= htmlspecialchars($todayTopName) ?></div>
+    <?php endif ?>
 
-        <div class="slides">
+    <div class="layout">
 
-            <!-- ============ SLIDE 1 : HERO PROMO ============ -->
-            <section class="slide hero-slide slide-active">
-                <div class="blob blob-1"></div>
-                <div class="blob blob-2"></div>
-                <div class="blob blob-3"></div>
-                <div class="hero-inner">
-                    <div class="hero-tag">🎁 PROMO BUNDLING FAVORIT</div>
-                    <div class="hero-combo">
-                        <?php if ($heroCombo): ?>
-                            <span class="hero-item"><span class="hero-emoji"><?= emoji_menu($heroCombo['A']) ?></span><span class="hero-name"><?= htmlspecialchars($heroCombo['A']) ?></span></span>
-                            <span class="hero-plus">+</span>
-                            <span class="hero-item"><span class="hero-emoji"><?= emoji_menu($heroCombo['B']) ?></span><span class="hero-name"><?= htmlspecialchars($heroCombo['B']) ?></span></span>
-                        <?php endif ?>
+        <!-- ============ PANEL KIRI : MENU TERLARIS ============ -->
+        <section class="panel panel-populer">
+            <h2>🔥 Menu Terlaris</h2>
+            <ol class="top-list">
+                <?php foreach ($topItems as $i => $m):
+                    $rel = $maxQty > 0 ? ($m['qty'] / $maxQty) : 0;
+                    $rating = number_format(3 + 2 * $rel, 1);
+                    $stars = (int)round(1 + 4 * $rel);
+                ?>
+                    <li class="top-item">
+                        <span class="rank"><?= $i + 1 ?></span>
+                        <span class="thumb"><?= menu_visual($m['nama_menu'], $gambarMap, 'thumb-img') ?></span>
+                        <span class="top-info">
+                            <span class="top-name"><?= htmlspecialchars($m['nama_menu']) ?></span>
+                            <span class="top-stars">
+                                <span class="top-rating">★ <?= $rating ?></span>
+                                <?= str_repeat('★', $stars) . str_repeat('☆', 5 - $stars) ?>
+                            </span>
+                        </span>
+                        <span class="top-price"><?= rupiah($m['harga']) ?></span>
+                    </li>
+                <?php endforeach ?>
+            </ol>
+        </section>
+
+        <!-- ============ PANEL KANAN : PROMO + REKOMENDASI ============ -->
+        <aside class="side">
+            <section class="panel panel-promo">
+                <h2>🎁 Promo Bundling</h2>
+                <?php if ($heroCombo): ?>
+                    <div class="combo">
+                        <div class="combo-foto">
+                            <?= menu_visual($heroCombo['A'], $gambarMap, 'combo-img') ?>
+                            <span class="combo-plus">+</span>
+                            <?= menu_visual($heroCombo['B'], $gambarMap, 'combo-img') ?>
+                        </div>
+                        <div class="combo-nama"><?= htmlspecialchars($heroCombo['A']) ?> <span>+</span> <?= htmlspecialchars($heroCombo['B']) ?></div>
+                        <div class="combo-desc">Kombinasi favorit pelanggan — cocok dinikmati bersama</div>
+                        <div class="combo-harga">Mulai dari <?= rupiah($heroHarga) ?></div>
                     </div>
-                    <div class="hero-title">KOMBINASI<br>FAVORIT PELANGGAN</div>
-                    <div class="hero-sub">Nikmati bersama orang tersayang</div>
-                    <div class="hero-price" data-count="<?= (int)$heroHarga ?>">Rp <span class="num">0</span></div>
-                </div>
-            </section>
-
-            <!-- ============ SLIDE 2 : MENU MAKANAN ============ -->
-            <section class="slide board-slide">
-                <div class="board-head">
-                    <h2>🍽️ Menu Makanan</h2>
-                    <span class="board-count"><?= count($makananItems) ?> ITEM</span>
-                </div>
-                <div class="menu-grid">
-                    <?php foreach ($makananItems as $i => $m): ?>
-                        <div class="food-card" style="--d:<?= $i * 0.05 ?>s">
-                            <div class="card-emoji"><?= emoji_menu($m['nama_menu']) ?></div>
-                            <?php if (isset($populerSet[$m['nama_menu']])): ?>
-                                <span class="card-badge">🔥 POPULER</span>
-                            <?php endif ?>
-                            <div class="card-name"><?= htmlspecialchars($m['nama_menu']) ?></div>
-                            <div class="card-price"><?= rupiah($m['harga']) ?></div>
-                        </div>
-                    <?php endforeach ?>
-                </div>
-            </section>
-
-            <!-- ============ SLIDE 3 : MENU MINUMAN ============ -->
-            <section class="slide board-slide">
-                <div class="board-head">
-                    <h2>🥤 Menu Minuman</h2>
-                    <span class="board-count"><?= count($minumanItems) ?> ITEM</span>
-                </div>
-                <div class="menu-grid">
-                    <?php foreach ($minumanItems as $i => $m): ?>
-                        <div class="drink-card" style="--d:<?= $i * 0.05 ?>s">
-                            <div class="card-emoji"><?= emoji_menu($m['nama_menu']) ?></div>
-                            <?php if (isset($populerSet[$m['nama_menu']])): ?>
-                                <span class="card-badge">🔥 POPULER</span>
-                            <?php endif ?>
-                            <div class="card-name"><?= htmlspecialchars($m['nama_menu']) ?></div>
-                            <div class="card-price"><?= rupiah($m['harga']) ?></div>
-                        </div>
-                    <?php endforeach ?>
-                </div>
-            </section>
-
-            <!-- ============ SLIDE 4 : PODIUM TERLARIS ============ -->
-            <section class="slide podium-slide">
-                <div class="board-head">
-                    <h2>🔥 Menu Terlaris</h2>
-                    <span class="board-count">PILIHAN PELANGGAN</span>
-                </div>
-                <?php if ($podiumTop): ?>
-                <div class="podium">
-                    <?php $order = [1, 0, 2]; $medal = ['🥇', '🥈', '🥉']; ?>
-                    <?php foreach ($order as $k): if (!isset($podiumTop[$k])) continue;
-                        $p = $podiumTop[$k];
-                        $rel = $maxQty > 0 ? ($p['qty'] / $maxQty) : 0;
-                        $stars = (int)round(1 + 4 * $rel);
-                    ?>
-                        <div class="podium-col rank-<?= $k + 1 ?>" style="--d:<?= $k * 0.1 ?>s">
-                            <div class="podium-stars"><?= str_repeat('★', $stars) . str_repeat('☆', 5 - $stars) ?></div>
-                            <div class="podium-plate">
-                                <span class="podium-emoji"><?= emoji_menu($p['nama_menu']) ?></span>
-                                <span class="podium-name"><?= htmlspecialchars($p['nama_menu']) ?></span>
-                                <span class="podium-price"><?= rupiah($p['harga']) ?></span>
-                            </div>
-                            <div class="podium-medal"><?= $medal[$k] ?></div>
-                            <div class="podium-rank">#<?= $k + 1 ?></div>
-                        </div>
-                    <?php endforeach ?>
-                </div>
+                <?php else: ?>
+                    <p class="muted">Belum ada kombinasi promo. Upload lebih banyak data transaksi untuk menghasilkan rekomendasi.</p>
                 <?php endif ?>
-                <div class="top-rest">
-                    <?php foreach ($podiumRest as $m): ?>
-                        <span class="rest-chip"><b><?= emoji_menu($m['nama_menu']) ?></b> <?= htmlspecialchars($m['nama_menu']) ?></span>
-                    <?php endforeach ?>
-                </div>
             </section>
 
-        </div>
+            <section class="panel panel-rek">
+                <h2>💡 Rekomendasi</h2>
+                <ul class="rek-list">
+                    <?php if ($andalan): ?>
+                        <li><span class="rek-icon">⭐</span><span><b>Wajib coba:</b> <?= htmlspecialchars($andalan['nama_menu']) ?></span></li>
+                    <?php endif ?>
+                    <?php if ($komboRek): ?>
+                        <li><span class="rek-icon">🤝</span><span><b>Kombinasi favorit:</b> <?= htmlspecialchars($komboRek['A']) ?> + <?= htmlspecialchars($komboRek['B']) ?></span></li>
+                    <?php endif ?>
+                    <?php if (isset($katLeadNama)): ?>
+                        <li><span class="rek-icon">📌</span><span><b>Kategori terpopuler:</b> <?= htmlspecialchars($katLeadNama) ?></span></li>
+                    <?php endif ?>
+                </ul>
+            </section>
 
-        <div class="dots" id="dots">
-            <button class="dot dot-active" data-i="0" title="Promo"></button>
-            <button class="dot" data-i="1" title="Makanan"></button>
-            <button class="dot" data-i="2" title="Minuman"></button>
-            <button class="dot" data-i="3" title="Terlaris"></button>
-        </div>
-    </div>
+            <section class="panel panel-info">
+                <h2>🕒 Jam Operasional</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-icon">🕗</span>
+                        <div><b><?= htmlspecialchars($infoBuka) ?></b><small><?= htmlspecialchars($infoJamMulai) ?> – <?= htmlspecialchars($infoJamTutup) ?> WIB</small></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📍</span>
+                        <div><b>Lokasi</b><small><?= htmlspecialchars($infoLokasi) ?></small></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📱</span>
+                        <div><b>WhatsApp</b><small><?= htmlspecialchars($infoWa) ?></small></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📸</span>
+                        <div><b>Instagram</b><small><?= htmlspecialchars($infoIg) ?></small></div>
+                    </div>
+                </div>
+            </section>
+        </aside>
 
-    <div class="ticker">
-        <div class="ticker-label">ℹ️</div>
-        <div class="ticker-window">
-            <div class="ticker-track">
-                <?php for ($r = 0; $r < 2; $r++): foreach ($ticker as $t): ?>
-                    <span class="ticker-item"><?= $t ?></span>
-                <?php endforeach; endfor ?>
-            </div>
-        </div>
     </div>
 
     <?php endif ?>
@@ -246,7 +225,6 @@ if (!$ticker) $ticker[] = '☕ Story Cafe — Menu Favorit & Rekomendasi';
 
 <script>
 window.AUTO_REFRESH = <?= (int)$autoDetik ?>;
-window.DISPLAY_ROTASI = <?= (int)$rotasiDetik ?>;
 </script>
 <script src="assets/js/display.js"></script>
 </body>
