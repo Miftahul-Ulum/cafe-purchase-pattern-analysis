@@ -14,6 +14,7 @@ Aplikasi berbasis PHP untuk menganalisis **pola minat beli konsumen di Story Caf
 - 📈 **Tren waktu** — pendapatan per tanggal, transaksi per jam & per hari
 - 📊 **Dashboard KPI** — total transaksi, pendapatan, rata-rata keranjang, menu terlaris
 - 💡 **Rekomendasi keputusan** — saran aksi konkret dari hasil analisis
+- 🖥️ **Layar monitor cafe** (`display.php`) — tampilan TV/monitor tema kopi, menu terlaris + promo, auto-refresh
 - 🖨️ Laporan dapat dicetak (print-friendly)
 
 ## Kebutuhan
@@ -32,6 +33,9 @@ Aplikasi berbasis PHP untuk menganalisis **pola minat beli konsumen di Story Caf
 3. Buka browser: `http://localhost/Analisis/analisis_full.php`
 4. Pada form **Upload Data Transaksi**, pilih `contoh_data.csv` lalu klik **Upload & Analisis**.
 5. Gunakan **Filter Analisis** untuk mengubah rentang tanggal, min support, dan min confidence.
+6. Untuk tampilan layar monitor cafe, buka `http://localhost/Analisis/display.php`
+   (atau klik **Layar Cafe** pada menu atas dashboard). Interval refresh default 60 detik,
+   bisa diubah: `display.php?detik=120`.
 
 ## Format Data
 
@@ -58,15 +62,20 @@ Detail lengkap: [docs/format_data.md](docs/format_data.md)
 
 ```
 Analisis/
-├── analisis_full.php      # Aplikasi utama (backend + markup)
+├── analisis_full.php      # Dashboard administrasi (backend + markup)
+├── display.php            # Layar monitor cafe (tema kopi, auto-refresh)
+├── includes/
+│   └── analisis.php       # Logika analisis bersama (DB, Apriori, ABC, KPI)
 ├── contoh_data.csv        # Contoh data transaksi (14 hari)
 ├── README.md
 ├── .gitignore
 ├── assets/
 │   ├── css/
-│   │   └── style.css      # Seluruh styling dashboard
+│   │   ├── style.css      # Styling dashboard administrasi
+│   │   └── display.css    # Styling layar cafe
 │   └── js/
-│       └── main.js        # Render grafik (Chart.js) dari window.CHART_DATA
+│       ├── main.js        # Render grafik dashboard (Chart.js)
+│       └── display.js     # Jam realtime + auto-refresh layar cafe
 ├── docs/
 │   └── format_data.md     # Dokumentasi format data CSV/XLSX
 └── sql/

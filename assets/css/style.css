@@ -202,6 +202,63 @@ input[type=file], input[type=date], input[type=number] {
     color: #084298;
 }
 
+/* ================= CAROUSEL REKOMENDASI ================= */
+.rek-carousel { position: relative; }
+.rek-track { position: relative; min-height: 150px; }
+.rek-slide { display: none; }
+.rek-slide.active { display: block; animation: rekFade .45s ease; }
+
+.rek-slide .rek-card { margin-bottom: 0; }
+
+@keyframes rekFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.rek-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.rek-prev, .rek-next {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: #eef2f7;
+    color: #374151;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.rek-prev:hover, .rek-next:hover { background: #d8e2ee; }
+
+.rek-dots { display: flex; gap: 8px; }
+
+.rek-dot {
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #cbd5e1;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.rek-dot.active {
+    background: #0d6efd;
+    width: 24px;
+    border-radius: 6px;
+}
+
+/* ================= FILTER BAR ================= */
+
 .filter-bar {
     background: #eef2f7;
     border-radius: 8px;

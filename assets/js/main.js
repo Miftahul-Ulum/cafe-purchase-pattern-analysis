@@ -98,3 +98,41 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+/* ============================================================
+   CAROUSEL REKOMENDASI KEPUTUSAN
+   Auto-play 6 detik, panah, dots, jeda saat kursor di atasnya.
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+    const carousel = document.getElementById('rekCarousel');
+    if (!carousel) return;
+
+    const slides = carousel.querySelectorAll('.rek-slide');
+    const dots   = carousel.querySelectorAll('.rek-dot');
+    let idx = 0, timer = null;
+
+    function show(n) {
+        idx = (n + slides.length) % slides.length;
+        slides.forEach(function (s, k) { s.classList.toggle('active', k === idx); });
+        dots.forEach(function (d, k) { d.classList.toggle('active', k === idx); });
+    }
+
+    function next() { show(idx + 1); }
+    function start() { timer = setInterval(next, 6000); }
+    function stop() { clearInterval(timer); timer = null; }
+    function restart() { stop(); start(); }
+
+    carousel.addEventListener('mouseenter', stop);
+    carousel.addEventListener('mouseleave', restart);
+
+    const prev = carousel.querySelector('.rek-prev');
+    const nxt  = carousel.querySelector('.rek-next');
+    if (prev) prev.addEventListener('click', function () { show(idx - 1); restart(); });
+    if (nxt)  nxt.addEventListener('click',  function () { show(idx + 1); restart(); });
+
+    dots.forEach(function (d) {
+        d.addEventListener('click', function () { show(+d.dataset.i); restart(); });
+    });
+
+    start();
+});
